@@ -4,7 +4,6 @@ import connectDB from '@/lib/mongodb';
 import User from '@/models/User';
 import Repository from '@/models/Repository';
 import SharedAccess from '@/models/SharedAccess';
-import { invalidatePattern } from '@/lib/redis';
 
 interface RouteParams {
   params: Promise<{
@@ -141,9 +140,6 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       expiresAt,
     });
 
-    // Invalidate cache
-    await invalidatePattern(`repositories:${shareWithUser._id}`);
-
     return NextResponse.json({ sharedAccess }, { status: 201 });
   } catch (error: any) {
     console.error('Error in POST /api/repositories/[id]/share:', error);
@@ -194,9 +190,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     sharedAccess.isActive = false;
     sharedAccess.revokedAt = new Date();
     await sharedAccess.save();
-
-    // Invalidate cache
-    await invalidatePattern(`repositories:${sharedAccess.sharedWithUserId}`);
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

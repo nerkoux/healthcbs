@@ -5,7 +5,6 @@ import User from '@/models/User';
 import Repository from '@/models/Repository';
 import File from '@/models/File';
 import SharedAccess from '@/models/SharedAccess';
-import { getCached, setCache } from '@/lib/redis';
 
 interface RouteParams {
   params: Promise<{
@@ -33,44 +32,35 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     // Await params in Next.js 15+
     const { id } = await params;
 
-    // Check cache
-    const cacheKey = `repository:${id}:files:${user._id}`;
-    let files = await getCached<any>(cacheKey);
+    // Check if user has access to repository
+    const repository = await Repository.findById(id);
 
-    if (!files) {
-      // Check if user has access to repository
-      const repository = await Repository.findById(id);
-
-      if (!repository) {
-        return NextResponse.json({ error: 'Repository not found' }, { status: 404 });
-      }
-
-      const isOwner = repository.ownerId.toString() === (user._id as any).toString();
-      
-      if (!isOwner) {
-        const access = await SharedAccess.findOne({
-          repositoryId: repository._id,
-          sharedWithUserId: user._id,
-          isActive: true,
-          $or: [
-            { expiresAt: { $exists: false } },
-            { expiresAt: { $gt: new Date() } },
-          ],
-        });
-
-        if (!access) {
-          return NextResponse.json({ error: 'Access denied' }, { status: 403 });
-        }
-      }
-
-      // Get files
-      files = await File.find({ repositoryId: repository._id })
-        .sort({ uploadedAt: -1 })
-        .lean();
-
-      // Cache for 5 minutes
-      await setCache(cacheKey, files, 300);
+    if (!repository) {
+      return NextResponse.json({ error: 'Repository not found' }, { status: 404 });
     }
+
+    const isOwner = repository.ownerId.toString() === (user._id as any).toString();
+    
+    if (!isOwner) {
+      const access = await SharedAccess.findOne({
+        repositoryId: repository._id,
+        sharedWithUserId: user._id,
+        isActive: true,
+        $or: [
+          { expiresAt: { $exists: false } },
+          { expiresAt: { $gt: new Date() } },
+        ],
+      });
+
+      if (!access) {
+        return NextResponse.json({ error: 'Access denied' }, { status: 403 });
+      }
+    }
+
+    // Get files
+    const files = await File.find({ repositoryId: repository._id })
+      .sort({ uploadedAt: -1 })
+      .lean();
 
     return NextResponse.json({ files });
   } catch (error: any) {

@@ -6,7 +6,6 @@ import Repository from '@/models/Repository';
 import File from '@/models/File';
 import { uploadToR2 } from '@/lib/r2';
 import { encryptBuffer } from '@/lib/encryption';
-import { invalidatePattern } from '@/lib/redis';
 
 export async function POST(request: NextRequest) {
   try {
@@ -84,9 +83,6 @@ export async function POST(request: NextRequest) {
     repository.filesCount += 1;
     repository.totalSize += buffer.length;
     await repository.save();
-
-    // Invalidate cache
-    await invalidatePattern(`repositories:${user._id}`);
 
     return NextResponse.json({
       success: true,

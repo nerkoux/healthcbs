@@ -4,7 +4,6 @@ import connectDB from '@/lib/mongodb';
 import User from '@/models/User';
 import Repository from '@/models/Repository';
 import SharedAccess from '@/models/SharedAccess';
-import { getCached, setCache, invalidatePattern } from '@/lib/redis';
 
 // GET /api/repositories - Get user's repositories and shared repositories
 export async function GET(request: NextRequest) {
@@ -23,45 +22,36 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    // Check cache
-    const cacheKey = `repositories:${user._id}`;
-    let data = await getCached<any>(cacheKey);
+    // Get owned repositories
+    const ownedRepos = await Repository.find({ ownerId: user._id })
+      .sort({ updatedAt: -1 })
+      .lean();
 
-    if (!data) {
-      // Get owned repositories
-      const ownedRepos = await Repository.find({ ownerId: user._id })
-        .sort({ updatedAt: -1 })
-        .lean();
+    // Get shared repositories
+    const sharedAccess = await SharedAccess.find({
+      sharedWithUserId: user._id,
+      isActive: true,
+      $or: [
+        { expiresAt: { $exists: false } },
+        { expiresAt: { $gt: new Date() } },
+      ],
+    })
+      .lean();
 
-      // Get shared repositories
-      const sharedAccess = await SharedAccess.find({
-        sharedWithUserId: user._id,
-        isActive: true,
-        $or: [
-          { expiresAt: { $exists: false } },
-          { expiresAt: { $gt: new Date() } },
-        ],
-      })
-        .lean();
+    // Get repository IDs
+    const sharedRepoIds = sharedAccess.map(access => access.repositoryId);
 
-      // Get repository IDs
-      const sharedRepoIds = sharedAccess.map(access => access.repositoryId);
+    // Fetch the actual repositories
+    const sharedRepos = await Repository.find({
+      _id: { $in: sharedRepoIds }
+    })
+      .sort({ updatedAt: -1 })
+      .lean();
 
-      // Fetch the actual repositories
-      const sharedRepos = await Repository.find({
-        _id: { $in: sharedRepoIds }
-      })
-        .sort({ updatedAt: -1 })
-        .lean();
-
-      data = {
-        owned: ownedRepos,
-        shared: sharedRepos,
-      };
-
-      // Cache for 5 minutes
-      await setCache(cacheKey, data, 300);
-    }
+    const data = {
+      owned: ownedRepos,
+      shared: sharedRepos,
+    };
 
     return NextResponse.json(data);
   } catch (error: any) {
@@ -119,9 +109,6 @@ export async function POST(request: NextRequest) {
       ownerUsername: user.username,
       isPrivate,
     });
-
-    // Invalidate cache
-    await invalidatePattern(`repositories:${user._id}`);
 
     return NextResponse.json({ repository }, { status: 201 });
   } catch (error: any) {

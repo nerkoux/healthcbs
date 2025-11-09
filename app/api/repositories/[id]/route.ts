@@ -5,7 +5,6 @@ import User from '@/models/User';
 import Repository from '@/models/Repository';
 import File from '@/models/File';
 import SharedAccess from '@/models/SharedAccess';
-import { invalidatePattern } from '@/lib/redis';
 
 interface RouteParams {
   params: Promise<{
@@ -111,9 +110,6 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
     await repository.save();
 
-    // Invalidate cache
-    await invalidatePattern(`repositories:${user._id}`);
-
     return NextResponse.json({ repository });
   } catch (error: any) {
     console.error('Error in PATCH /api/repositories/[id]:', error);
@@ -161,9 +157,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     
     // Delete repository
     await repository.deleteOne();
-
-    // Invalidate cache
-    await invalidatePattern(`repositories:${user._id}`);
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
