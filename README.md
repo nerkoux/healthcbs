@@ -227,8 +227,8 @@ SharedAccess {
 
 1. **Clone the Repository**
 ```bash
-git clone https://github.com/yourusername/healthvault.git
-cd healthvault
+git clone https://github.com/nerkoux/healthcbs.git
+cd healthcbs
 ```
 
 2. **Install Dependencies**
@@ -715,9 +715,9 @@ This project is licensed under the **MIT License** - see [LICENSE](LICENSE) file
 
 ## 📞 Contact
 
-**Project Link:** [https://github.com/yourusername/healthvault](https://github.com/yourusername/healthvault)  
-**Live Demo:** [https://healthvault.vercel.app](https://healthvault.vercel.app)  
-**Email:** team@healthvault.com
+**Project Link:** [https://github.com/nerkoux/healthvault](https://github.com/nerkoux/healthcbs)  
+**Live Demo:** [https://cbs.akshatmehta.com](https://cbs.akshatmehta.com)  
+**Email:** hello@akshatmehta.com
 
 ---
 
@@ -730,3 +730,4 @@ This project is licensed under the **MIT License** - see [LICENSE](LICENSE) file
 Made by [Team Name] | HackCBS 8.0
 
 </div>
+
