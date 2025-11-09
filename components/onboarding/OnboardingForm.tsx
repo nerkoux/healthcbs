@@ -154,7 +154,7 @@ export default function OnboardingForm({ user }: OnboardingFormProps) {
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="age">Age</Label>
+                  <Label htmlFor="age" className="text-gray-300">Age</Label>
                   <Input
                     id="age"
                     type="number"
@@ -163,13 +163,14 @@ export default function OnboardingForm({ user }: OnboardingFormProps) {
                     placeholder="25"
                     min="1"
                     max="150"
+                    className="bg-[#1e1e1e] border-[#3c3c3c] text-white placeholder:text-gray-500"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="bloodGroup">Blood Group</Label>
+                  <Label htmlFor="bloodGroup" className="text-gray-300">Blood Group</Label>
                   <Select value={bloodGroup} onValueChange={setBloodGroup}>
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-[#1e1e1e] border-[#3c3c3c] text-white">
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
@@ -183,7 +184,7 @@ export default function OnboardingForm({ user }: OnboardingFormProps) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="height">Height (cm)</Label>
+                  <Label htmlFor="height" className="text-gray-300">Height (cm)</Label>
                   <Input
                     id="height"
                     type="number"
@@ -192,11 +193,12 @@ export default function OnboardingForm({ user }: OnboardingFormProps) {
                     placeholder="170"
                     min="50"
                     max="300"
+                    className="bg-[#1e1e1e] border-[#3c3c3c] text-white placeholder:text-gray-500"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="weight">Weight (kg)</Label>
+                  <Label htmlFor="weight" className="text-gray-300">Weight (kg)</Label>
                   <Input
                     id="weight"
                     type="number"
@@ -205,13 +207,14 @@ export default function OnboardingForm({ user }: OnboardingFormProps) {
                     placeholder="70"
                     min="10"
                     max="500"
+                    className="bg-[#1e1e1e] border-[#3c3c3c] text-white placeholder:text-gray-500"
                   />
                 </div>
 
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="gender">Gender</Label>
+                  <Label htmlFor="gender" className="text-gray-300">Gender</Label>
                   <Select value={gender} onValueChange={setGender}>
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-[#1e1e1e] border-[#3c3c3c] text-white">
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
@@ -224,13 +227,13 @@ export default function OnboardingForm({ user }: OnboardingFormProps) {
               </div>
 
               <div className="flex gap-3">
-                <Button variant="outline" onClick={() => setStep(1)} className="flex-1">
+                <Button variant="outline" onClick={() => setStep(1)} className="flex-1 border-[#3c3c3c] text-gray-300 hover:bg-[#2a2a2a] hover:text-white">
                   Back
                 </Button>
                 <Button
                   onClick={handleNextStep}
                   disabled={!age || !bloodGroup || !height || !weight || !gender || loading}
-                  className="flex-1"
+                  className="flex-1 btn-gradient"
                   size="lg"
                 >
                   {loading ? (

@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { formatMarkdown } from '@/lib/markdown-formatter';
 import { 
   FolderOpen, 
   Plus, 
@@ -288,23 +289,11 @@ export default function DashboardContent({ user }: DashboardContentProps) {
                             className="mt-1 bg-[#1e1e1e] border-[#3c3c3c] text-white"
                           />
                         </div>
-                        <div>
-                          <Label htmlFor="repo-visibility" className="text-gray-300">Visibility</Label>
-                          <Select value={isPrivate ? 'private' : 'public'} onValueChange={(v) => setIsPrivate(v === 'private')}>
-                            <SelectTrigger className="mt-1 bg-[#1e1e1e] border-[#3c3c3c] text-white">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="private">Private - Only you and people you share with</SelectItem>
-                              <SelectItem value="public">Public - Anyone can view</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
                         <div className="flex gap-2 pt-4">
                           <Button onClick={handleCreateRepository} disabled={isCreating} className="flex-1 btn-gradient">
                             {isCreating ? 'Creating...' : 'Create Repository'}
                           </Button>
-                          <Button variant="outline" onClick={() => setIsNewRepoOpen(false)} disabled={isCreating} className="border-[#3c3c3c] text-gray-300 hover:bg-[#1e1e1e]">
+                          <Button variant="outline" onClick={() => setIsNewRepoOpen(false)} disabled={isCreating} className="border-[#3c3c3c] text-gray-300 hover:bg-[#2a2a2a] hover:text-white">
                             Cancel
                           </Button>
                         </div>
@@ -407,7 +396,7 @@ export default function DashboardContent({ user }: DashboardContentProps) {
                           {healthAnalysis.riskAssessment.slice(0, 3).map((risk: string, i: number) => (
                             <li key={i} className="flex items-start gap-2">
                               <span className="text-red-400">•</span>
-                              <span className="text-sm text-gray-300">{risk}</span>
+                              <span className="text-sm text-gray-300">{formatMarkdown(risk)}</span>
                             </li>
                           ))}
                         </ul>
@@ -419,7 +408,7 @@ export default function DashboardContent({ user }: DashboardContentProps) {
                           {healthAnalysis.recommendations.slice(0, 3).map((rec: string, i: number) => (
                             <li key={i} className="flex items-start gap-2">
                               <span className="text-[#03DAC6]">•</span>
-                              <span className="text-sm text-gray-300">{rec}</span>
+                              <span className="text-sm text-gray-300">{formatMarkdown(rec)}</span>
                             </li>
                           ))}
                         </ul>
@@ -539,7 +528,7 @@ export default function DashboardContent({ user }: DashboardContentProps) {
                         <Button onClick={handleUpdateProfile} disabled={isUpdating} className="flex-1 btn-gradient">
                           {isUpdating ? 'Updating...' : 'Update Profile'}
                         </Button>
-                        <Button variant="outline" onClick={() => setIsEditProfileOpen(false)} disabled={isUpdating} className="border-[#3c3c3c] text-gray-300 hover:bg-[#1e1e1e]">
+                        <Button variant="outline" onClick={() => setIsEditProfileOpen(false)} disabled={isUpdating} className="border-[#3c3c3c] text-gray-300 hover:bg-[#2a2a2a] hover:text-white">
                           Cancel
                         </Button>
                       </div>
@@ -587,7 +576,7 @@ export default function DashboardContent({ user }: DashboardContentProps) {
                     {healthAnalysis.riskAssessment.map((risk: string, i: number) => (
                       <li key={i} className="flex items-start gap-2 p-3 bg-[#1e1e1e] rounded-lg border border-[#3c3c3c]">
                         <span className="text-red-400 mt-0.5">⚠️</span>
-                        <span className="text-sm text-gray-300">{risk}</span>
+                        <span className="text-sm text-gray-300">{formatMarkdown(risk)}</span>
                       </li>
                     ))}
                   </ul>
@@ -599,7 +588,7 @@ export default function DashboardContent({ user }: DashboardContentProps) {
                     {healthAnalysis.recommendations.map((rec: string, i: number) => (
                       <li key={i} className="flex items-start gap-2 p-3 bg-[#1e1e1e] rounded-lg border border-[#3c3c3c]">
                         <span className="text-[#03DAC6] mt-0.5">✓</span>
-                        <span className="text-sm text-gray-300">{rec}</span>
+                        <span className="text-sm text-gray-300">{formatMarkdown(rec)}</span>
                       </li>
                     ))}
                   </ul>

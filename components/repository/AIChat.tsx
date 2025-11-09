@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
+import { formatMarkdown } from '@/lib/markdown-formatter';
 import { X, Send, Bot, User as UserIcon, FileText, Loader2, Sparkles } from 'lucide-react';
 
 interface Message {
@@ -176,7 +177,9 @@ export default function AIChat({ isOpen, onClose, repositoryId, repositoryName, 
                     {message.fileIds.length} file(s) attached
                   </div>
                 )}
-                <div className="whitespace-pre-wrap break-words leading-relaxed">{message.content}</div>
+                <div className="break-words leading-relaxed">
+                  {message.role === 'assistant' ? formatMarkdown(message.content) : <span className="whitespace-pre-wrap">{message.content}</span>}
+                </div>
                 <div className={`text-xs mt-2 ${message.role === 'user' ? 'text-blue-200' : 'text-gray-500 dark:text-gray-500'}`}>
                   {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </div>

@@ -317,7 +317,7 @@ export default function RepositoryPage() {
                       <Button onClick={handleFileUpload} disabled={isUploading || !selectedFile} className="flex-1 btn-gradient">
                         {isUploading ? 'Uploading...' : 'Upload'}
                       </Button>
-                      <Button variant="outline" onClick={() => setIsUploadOpen(false)} disabled={isUploading} className="border-[#3c3c3c] text-gray-300 hover:bg-[#1e1e1e]">
+                      <Button variant="outline" onClick={() => setIsUploadOpen(false)} disabled={isUploading} className="border-[#3c3c3c] text-gray-300 hover:bg-[#2a2a2a] hover:text-white">
                         Cancel
                       </Button>
                     </div>
@@ -367,7 +367,7 @@ export default function RepositoryPage() {
                       <Button onClick={handleShare} disabled={isSharing} className="flex-1 btn-gradient">
                         {isSharing ? 'Sharing...' : 'Share'}
                       </Button>
-                      <Button variant="outline" onClick={() => setIsShareOpen(false)} disabled={isSharing} className="border-[#3c3c3c] text-gray-300 hover:bg-[#1e1e1e]">
+                      <Button variant="outline" onClick={() => setIsShareOpen(false)} disabled={isSharing} className="border-[#3c3c3c] text-gray-300 hover:bg-[#2a2a2a] hover:text-white">
                         Cancel
                       </Button>
                     </div>
